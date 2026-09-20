@@ -1,0 +1,6 @@
+{
+  "name": "Noyon Online Service",
+  "description": "বাংলাদেশের বিশ্বস্ত Facebook Followers ও সোশ্যাল গ্রোথ প্ল্যাটফর্ম। ১০০% Non-Drop সার্ভিস ও নিরাপদ ডেলিভারি।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
