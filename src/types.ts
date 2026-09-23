@@ -18,6 +18,7 @@ export interface FollowerPackage {
   badge?: string; // e.g. "Most Popular", "Best Value", "Top Selling"
   features: string[];
   checkoutUrl?: string; // Direct link to existing website product checkout page
+  code?: string; // Unique product checkout code (e.g. lr05xDInngGpMfZDkwiw)
 }
 
 export interface ReviewScreenshot {
@@ -53,4 +54,5 @@ export interface OrderDetails {
   trxId?: string;
   totalPriceBDT: number;
   placedAt: string;
+  status?: 'pending' | 'processing' | 'completed' | 'cancelled';
 }

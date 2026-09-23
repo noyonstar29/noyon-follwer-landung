@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Facebook,
   ShieldCheck,
@@ -11,8 +12,8 @@ import {
 import { CONTACT_CONFIG, CHECKOUT_CONFIG } from '../data/packagesData';
 
 interface NavbarProps {
-  onOpenTrackOrder: () => void;
-  onOrderNowClick: () => void;
+  onOpenTrackOrder?: () => void;
+  onOrderNowClick?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -21,6 +22,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,6 +41,38 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'রিভিউ', href: '#reviews' },
     { label: 'প্রশ্নোত্তর', href: '#faq' },
   ];
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    if (href.startsWith('#')) {
+      const targetId = href.replace('#', '');
+      if (location.pathname === '/') {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        navigate(`/${href}`);
+      }
+    } else {
+      navigate(href);
+    }
+  };
+
+  const handleOrderNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === '/') {
+      const el = document.getElementById('packages');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      } else if (onOrderNowClick) {
+        onOrderNowClick();
+      }
+    } else {
+      navigate('/#packages');
+    }
+  };
 
   return (
     <>
@@ -76,9 +111,15 @@ export const Navbar: React.FC<NavbarProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Brand Logo */}
-          <a
+          <Link
             id="nav-brand-logo"
-            href="#hero"
+            to="/"
+            onClick={(e) => {
+              if (location.pathname === '/') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
             className="flex items-center gap-2.5 group focus:outline-hidden"
           >
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs transition-transform group-hover:scale-105">
@@ -97,7 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 ফেসবুক গ্রোথ পার্টনার
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
@@ -105,7 +146,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               <a
                 key={link.label}
                 href={link.href}
-                className="text-xs sm:text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-xs sm:text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 {link.label}
               </a>
@@ -127,26 +169,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
 
             {/* Track Order Button */}
-            <button
+            <Link
               id="nav-track-order-btn"
-              type="button"
-              onClick={onOpenTrackOrder}
+              to="/track-order"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-blue-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl transition-colors cursor-pointer"
             >
               <Search className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">অর্ডার ট্র্যাক</span>
-            </button>
+            </Link>
 
             {/* Order Now CTA */}
             <a
               id="nav-order-now-btn"
-              href={CHECKOUT_CONFIG.defaultCheckoutUrl}
-              onClick={(e) => {
-                if (onOrderNowClick) {
-                  e.preventDefault();
-                  onOrderNowClick();
-                }
-              }}
+              href="/#packages"
+              onClick={handleOrderNow}
               className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer text-center"
             >
               <Zap className="w-4 h-4 fill-current" />
@@ -174,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <a
                   key={link.label}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
                 >
                   {link.label}
@@ -200,16 +236,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <span>কথা বলতে চাই (01831079416)</span>
               </a>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenTrackOrder();
-                }}
-                className="w-full py-2 px-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50 rounded-xl border border-slate-200"
+              <Link
+                to="/track-order"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-2 px-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50 rounded-xl border border-slate-200 block"
               >
                 🔍 অর্ডার স্ট্যাটাস ট্র্যাক করুন
-              </button>
+              </Link>
             </div>
           </div>
         )}

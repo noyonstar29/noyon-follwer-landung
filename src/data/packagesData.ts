@@ -9,6 +9,7 @@ import fahimImg from '../assets/images/fahim_chowdhury_1789890435628.jpg';
 export const PACKAGES_DATA: FollowerPackage[] = [
   {
     id: 'pkg-1k-bd',
+    code: 'lr05xDInngGpMfZDkwiw',
     name: '1K Bangladeshi Followers',
     serviceType: 'bangladeshi',
     amount: 1000,
@@ -31,6 +32,7 @@ export const PACKAGES_DATA: FollowerPackage[] = [
   },
   {
     id: 'pkg-5k-bd',
+    code: 'AnjA1dv62mhUeQgQxqNO',
     name: '5K Bangladeshi Followers',
     serviceType: 'bangladeshi',
     amount: 5000,
@@ -53,6 +55,7 @@ export const PACKAGES_DATA: FollowerPackage[] = [
   },
   {
     id: 'pkg-10k-bd',
+    code: 'yD4EzVFYCcItk4vv9Zjk',
     name: '10K Bangladeshi Followers',
     serviceType: 'bangladeshi',
     amount: 10000,
@@ -75,6 +78,7 @@ export const PACKAGES_DATA: FollowerPackage[] = [
   },
   {
     id: 'pkg-1k-global',
+    code: 'ZYj5vI3bywyuUEVFh1IA',
     name: '1K Global Followers',
     serviceType: 'global',
     amount: 1000,
@@ -97,6 +101,7 @@ export const PACKAGES_DATA: FollowerPackage[] = [
   },
   {
     id: 'pkg-5k-global',
+    code: '2VePMra01TSz4MyAGMht',
     name: '5K Global Followers',
     serviceType: 'global',
     amount: 5000,
@@ -119,6 +124,7 @@ export const PACKAGES_DATA: FollowerPackage[] = [
   },
   {
     id: 'pkg-10k-global',
+    code: 'r5VhhYn91qTSFjT4K49M',
     name: '10K Global Followers',
     serviceType: 'global',
     amount: 10000,
@@ -383,4 +389,20 @@ export const CHECKOUT_CONFIG = {
     window.location.href = targetUrl;
   },
 };
+
+/**
+ * Finds a package by ID, product code, or checkout URL segment
+ */
+export function findPackageByIdOrCode(idOrCode?: string): FollowerPackage | undefined {
+  if (!idOrCode) return undefined;
+  const clean = idOrCode.trim().toLowerCase();
+  return PACKAGES_DATA.find((pkg) => {
+    if (pkg.id.toLowerCase() === clean) return true;
+    if (pkg.code && pkg.code.toLowerCase() === clean) return true;
+    if (pkg.checkoutUrl && pkg.checkoutUrl.toLowerCase().includes(clean)) return true;
+    const nameSlug = pkg.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    if (nameSlug.includes(clean) || clean.includes(nameSlug)) return true;
+    return false;
+  });
+}
 

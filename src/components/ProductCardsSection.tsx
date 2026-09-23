@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Facebook,
   Check,
@@ -226,7 +227,12 @@ export const ProductCardsSection: React.FC<ProductCardsSectionProps> = ({
                     {/* Package Title */}
                     <div className="flex items-start justify-between gap-2">
                       <h3 className="text-lg sm:text-xl font-black text-slate-900">
-                        {pkg.name}
+                        <Link
+                          to={`/product/${pkg.code || pkg.id}`}
+                          className="hover:text-blue-600 transition-colors"
+                        >
+                          {pkg.name}
+                        </Link>
                       </h3>
                     </div>
 
@@ -316,6 +322,16 @@ export const ProductCardsSection: React.FC<ProductCardsSectionProps> = ({
                         <Zap className="w-3.5 h-3.5 fill-current" />
                         <span>Order Now</span>
                       </a>
+                    </div>
+
+                    {/* View Details Route Link */}
+                    <div className="text-center pt-0.5">
+                      <Link
+                        to={`/product/${pkg.code || pkg.id}`}
+                        className="text-[11px] font-bold text-slate-500 hover:text-blue-600 transition-colors inline-flex items-center gap-1"
+                      >
+                        <span>প্যাকেজের বিস্তারিত বিবরণ ও ফিচারস দেখুন →</span>
+                      </Link>
                     </div>
 
                     {/* Support Link */}
